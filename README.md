@@ -13,7 +13,7 @@
 
 | Main | Detail | 
 | --- | --- |
-| ![image](https://user-images.githubusercontent.com/104040502/236858809-08092f54-906f-410f-a0dc-04f0f0f972e9.png) | ![image](https://user-images.githubusercontent.com/104040502/236858859-85e5f504-109f-4ceb-be55-813749d36e1c.png) |
+| ![image](https://user-images.githubusercontent.com/104040502/236858809-08092f54-906f-410f-a0dc-04f0f0f972e9.png) | ![image](https://user-images.githubusercontent.com/104040502/236859548-2b1e8e83-b58e-4c26-9ea1-840fd6d4db87.png) |
 
 | Register | Modify | 
 | --- | --- |

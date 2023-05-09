@@ -1,5 +1,7 @@
 from random import *
 from database import db, increase_id
+from crawling import getMetaData
+from time import time
 
 
 
@@ -21,6 +23,8 @@ def create_data():
 
     counts = int(input("추가할 데이터 수를 입력하세요. "))
 
+    start = time()
+
     for _ in range(counts):
 
         user = choice(user_list)
@@ -28,6 +32,20 @@ def create_data():
         name = choice(product_list[category])
         price = choice(price_list)
         description = choice(description_list)
+
+        
+        crawling_start = time()
+
+        try:
+            [title, description, image_url] = getMetaData(url)
+        except:
+            image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+        
+        crawling_end = time()
+
+        crawling_time = crawling_end - crawling_start
+        print(f"크롤링에 소요된 시간은 {crawling_time}초")
+
 
         id = increase_id()
 
@@ -39,11 +57,14 @@ def create_data():
             'category': category,
             'price': price,
             'url': url,
-            'description': description
+            'image_url': image_url,
+            'description': description,
         }
 
         db.product.insert_one(product_info)
         print(f"{name}에 대한 위시리스트 등록 완료")
+    end = time()
+    print(f"데이터 {counts}개를 생성하는데 총 소요된 시간은 {end-start}초")
 
 
 def check_db(table_name):
@@ -60,7 +81,6 @@ def set_id_count(table_name):
 
 # 데이터 생성
 create_data()
-
 
 table_name = "product"
 

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FLEX</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"
+    ></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
+        }
+    
+        .header {
+            background-color: #677B70;
+        }
+
+        .header-wrap {
+            display: flex;
+            margin: auto;
+            width: 1128px;
+            height: 150px;
+        }
+
+        .left-section {
+            flex-grow: 0.5;
+            margin: auto;
+            font-family: 'Montserrat';
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .middle-section {
+            flex-grow: 1;
+            margin: 25px;
+            border-right: thin solid white;
+
+        }
+
+        .right-section {
+            flex-grow: 4;
+            margin: 0 20px;
+        }
+
+        .btn-category {
+            margin: 0 10px;
+            transform: translate(0, 150%);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: white;
+            align-items: flex-end;
+        }
+
+        main {
+            margin: auto;
+            width: 1128px;
+            height: 100px;
+        }
+
+        .page-wrap {
+            display: grid;
+            grid-template-columns: 80% 20%;
+            padding: 30px;
+        }
+
+        .page {
+            margin: auto;
+            padding-left: 150px;
+        }
+
+        .pagination {
+            margin: 0;
+        }
+
+        .page-link, .page-link:hover, .page-link:focus {
+            color: #677B70;
+        }
+
+        .btn-register {
+            float: right;
+        }
+
+        .btn-primary, .btn-primary:hover, .btn-primary:focus {
+            background-color: #677B70;
+            border: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .product-box {
+            height: 500px;
+            background-color: rgba(103, 123, 112, 50%); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-wrap {
+            height: 480px;
+            display: grid;
+            grid-template-columns: 25% 25% 25% 25%;
+            grid-template-rows: 50% 50%;
+        }
+
+        .product-wrap > a{
+            margin-top: 10px;
+        }
+
+        .product-text {
+            width: 230px;
+            height: 200px;
+            margin: 10px 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: white;
+
+            border-radius: 30px;
+
+            background-position: center;
+            background-size: cover;
+        }
+
+        .product-detail {
+            height: 800px;
+            margin-top: 30px;
+            padding: 20px;
+
+            background-color: #fdf4e2;
+        }
+
+        .product-detail-top {
+            display: flex;
+        }
+        
+        .product-detail-img {
+            width: 350px;
+            height: 350px;
+
+            background-position: center;
+            background-size: cover;
+        }
+
+        .product-detail-table > tbody > tr > .product-detail-target {
+            padding: 0 40px 0 30px;
+
+            font-size: 2rem;
+            color: #677B70;
+        }
+
+        .product-detail-table > tbody > tr > .product-detail-content {
+            font-size: 1.3rem;
+        }
+
+        .product-detail-description-title {
+            margin: 20px 0;
+
+            font-weight: bold;
+            font-size: 2rem;
+            color: #677B70;
+        }
+
+        .product-detail-description-content {
+            margin: 0 20px;
+
+            line-height: 180%;
+            font-size: 1.3rem;
+        }
+
+        .product-detail-bottom {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+
+        }
+
+        .btn-delete {
+            margin-left: 20px;
+        }
+
+        .modal-dialog{
+            max-width: 1000px;
+            margin: 10rem auto;
+        }
+
+        .modal-title {
+            font-size: 2rem!important;
+            font-weight: 600;
+        }
+
+        .modal-content {
+            width: 1000px;
+            height: 700px;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            height: 60px;
+        }
+
+        .input-target {
+            width: 200px;
+            margin-left: 15px;
+
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #677B70;
+            
+        }
+
+        .input-content {
+            display: flex;
+            height: 40px;
+        }
+
+        .input-modal, select, textarea {
+            width: 750px;
+            border: 0.5px solid gray;
+            border-radius: 5px;
+        }
+
+        textarea {
+            height: 200px;
+        }
+        
+
+    </style>
+
+</head>
+<body>
+    <header class="header">
+        <div class="header-wrap">
+            <div class="left-section">FLEX</div>
+            <div class="middle-section"></div>
+            <div class="right-section">
+                <div class="btn btn-category" onclick="">전체</div>
+                <div class="btn btn-category" onclick="">패션</div>
+                <div class="btn btn-category" onclick="">전자제품</div>
+                <div class="btn btn-category" onclick="">음식</div>
+                <div class="btn btn-category" onclick="">화장품</div>
+                <div class="btn btn-category" onclick="">기타</div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="page-wrap">
+            <div class="page">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+            <div class="btn-register-wrap">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-register" data-bs-toggle="modal" data-bs-target="#RegisterModal">
+                    +
+                </button>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <div class="product-wrap">
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
+                        맥북에어
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
+                        갤럭시 z플립
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
+                        맥북에어
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
+                        갤럭시 z플립
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
+                        맥북에어
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
+                        갤럭시 z플립
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
+                        맥북에어
+                    </h5>
+                </a>
+                <a href="https://www.naver.com" target="_blank">
+                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
+                        갤럭시 z플립
+                    </h5>
+                </a>
+            </div>
+        </div>
+
+        <div class="product-detail">
+            <div class="product-detail-top">
+                <div class="product-detail-img" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')"></div>
+                <table class="product-detail-table">
+                    <tbody>
+                        <tr>
+                            <th class="product-detail-target">
+                                User
+                            </td>
+                            <td class="product-detail-content">
+                                피카츄
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="product-detail-target">
+                                Product
+                            </td>
+                            <td class="product-detail-content">
+                                맥북에어
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="product-detail-target">
+                                Category
+                            </td>
+                            <td class="product-detail-content">
+                                전자제품
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="product-detail-target">
+                                Price
+                            </td>
+                            <td class="product-detail-content">
+                                1,690,000원
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="product-detail-target">
+                                URL
+                            </td>
+                            <td class="product-detail-content">
+                                <a href="https://www.naver.com">https://www.naver.com</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="product-detail-middle">
+                <div class="product-detail-description-title">Description</div>
+                <div class="product-detail-description-content">
+                    개발자 필수템 맥북 가즈아!!!!!!!!!!!!!!!!!!<br>
+                    키스킨과 보호필름 구매도 잊지 말고 꼭 하자!!
+                </div>
+            </div>
+            <div class="product-detail-bottom">
+                <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal">
+                    Modify
+                </button>
+                <button type="button" class="btn btn-primary btn-delete" onclick="">
+                    Delete
+                </button>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="RegisterModal" tabindex="-1" aria-labelledby="RegisterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="RegisterModalLabel">Register</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-box-wrap">
+                            <div class="input-box">
+                                <div class="input-target">User</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Product</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Category</div>
+                                <div class="input-content">
+                                    <select name="category" id="category-select">
+                                        <option value="1">전체</option>
+                                        <option value="2">패션</option>
+                                        <option value="3">전자제품</option>
+                                        <option value="4">음식</option>
+                                        <option value="5">화장품</option>
+                                        <option value="6">기타</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Price</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">URL</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Description</div>
+                                <div class="input-content">
+                                    <textarea name="" id=""></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modify Modal -->
+        <div class="modal fade" id="ModifyModal" tabindex="-1" aria-labelledby="ModifyModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="ModifyModalLabel">Modify</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-box-wrap">
+                            <div class="input-box">
+                                <div class="input-target">User</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Product</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Category</div>
+                                <div class="input-content">
+                                    <select name="category" id="category-select">
+                                        <option value="1">전체</option>
+                                        <option value="2">패션</option>
+                                        <option value="3">전자제품</option>
+                                        <option value="4">음식</option>
+                                        <option value="5">화장품</option>
+                                        <option value="6">기타</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Price</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">URL</div>
+                                <div class="input-content">
+                                    <input type="text" class="input-modal">
+                                </div>
+                            </div>
+                            <div class="input-box">
+                                <div class="input-target">Description</div>
+                                <div class="input-content">
+                                    <textarea name="" id=""></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

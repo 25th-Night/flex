@@ -28,6 +28,11 @@ def product_post():
     url = request.form['url_give']
     description = request.form['description_give']
 
+    try:
+        [title, description, image_url] = getMetaData(url)
+    except:
+        image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+
     id = increase_id()
 
     product_info = {
@@ -38,6 +43,7 @@ def product_post():
         'category': category,
         'price': price,
         'url': url,
+        'image_url': image_url,
         'description': description
     }
 
@@ -57,14 +63,6 @@ def products_get():
         products = list(db.product.find({'category': int(category)}, {'_id': False}))
     else:
         products = list(db.product.find({}, {'_id': False}))
-
-    for product in products:
-        url = product['url']
-        try:
-            [title, description, image_url] = getMetaData(url)
-            product['image_url'] = image_url
-        except:
-            product['image_url'] = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
 
     return jsonify({'products': products})
 
@@ -87,12 +85,18 @@ def product_modify(id):
     url = request.form['url_give']
     description = request.form['description_give']
 
+    try:
+        [title, description, image_url] = getMetaData(url)
+    except:
+        image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+
     product_info = db.product.update_one({'id': int(id)}, {'$set':{
             'user': user,
             'name': name,
             'category': category,
             'price': price,
             'url': url,
+            'image_url': image_url,
             'description': description
             }
         }

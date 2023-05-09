@@ -1,6 +1,8 @@
 from enum import Enum
 from flask import Flask, render_template, request, jsonify
 from database import db, check_db, increase_id
+from crawling import getMetaData
+from time import time
 
 app = Flask(__name__)
 
@@ -47,12 +49,22 @@ def product_post():
 @app.route("/products", methods=["GET"])
 def products_get():
 
+    start = time()
+
     category = request.args.get('category', 0)
 
     if category:
         products = list(db.product.find({'category': int(category)}, {'_id': False}))
     else:
         products = list(db.product.find({}, {'_id': False}))
+
+    for product in products:
+        url = product['url']
+        try:
+            [title, description, image_url] = getMetaData(url)
+            product['image_url'] = image_url
+        except:
+            product['image_url'] = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
 
     return jsonify({'products': products})
 

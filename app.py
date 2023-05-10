@@ -29,7 +29,7 @@ def product_post():
     description = request.form['description_give']
 
     try:
-        [title, description, image_url] = getMetaData(url)
+        [title, desc, image_url] = getMetaData(url)
     except:
         image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
 
@@ -56,7 +56,6 @@ def product_post():
 def products_get():
 
     start = time()
-
     category = request.args.get('category', 0)
 
     if category:
@@ -86,7 +85,7 @@ def product_modify(id):
     description = request.form['description_give']
 
     try:
-        [title, description, image_url] = getMetaData(url)
+        [title, desc, image_url] = getMetaData(url)
     except:
         image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
 

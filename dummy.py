@@ -37,7 +37,7 @@ def create_data():
         crawling_start = time()
 
         try:
-            [title, description, image_url] = getMetaData(url)
+            [title, desc, image_url] = getMetaData(url)
         except:
             image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
         

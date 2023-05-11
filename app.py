@@ -1,6 +1,8 @@
 from enum import Enum
 from flask import Flask, render_template, request, jsonify
 from database import db, check_db, increase_id
+from crawling import getMetaData
+from time import time
 
 app = Flask(__name__)
 
@@ -26,6 +28,11 @@ def product_post():
     url = request.form['url_give']
     description = request.form['description_give']
 
+    try:
+        [title, desc, image_url] = getMetaData(url)
+    except:
+        image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+
     id = increase_id()
 
     product_info = {
@@ -36,6 +43,7 @@ def product_post():
         'category': category,
         'price': price,
         'url': url,
+        'image_url': image_url,
         'description': description
     }
 
@@ -47,6 +55,7 @@ def product_post():
 @app.route("/products", methods=["GET"])
 def products_get():
 
+    start = time()
     category = request.args.get('category', 0)
 
     if category:
@@ -75,12 +84,18 @@ def product_modify(id):
     url = request.form['url_give']
     description = request.form['description_give']
 
+    try:
+        [title, desc, image_url] = getMetaData(url)
+    except:
+        image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+
     product_info = db.product.update_one({'id': int(id)}, {'$set':{
             'user': user,
             'name': name,
             'category': category,
             'price': price,
             'url': url,
+            'image_url': image_url,
             'description': description
             }
         }

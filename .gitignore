@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # My Settings
+.secrets
 test_index.html
 
 # Distribution / packaging

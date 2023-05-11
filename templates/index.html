@@ -112,12 +112,14 @@
         .product-box {
             height: 500px;
             background-color: rgba(103, 123, 112, 50%); 
+            border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .product-wrap {
+            width: 1080px;
             height: 480px;
             display: grid;
             grid-template-columns: 25% 25% 25% 25%;
@@ -138,19 +140,33 @@
             align-items: center;
 
             color: white;
+            text-shadow: -1px 0px gray, 0px 1px gray, 1px 0px gray, 0px -1px gray;
 
-            border-radius: 30px;
+            border-radius: 20px;
 
             background-position: center;
             background-size: cover;
         }
 
+        .product-text:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+            transition: transform 0.5s;
+            filter: brightness(70%);
+        }
+
         .product-detail {
-            height: 800px;
+            padding-bottom: 100px;
+        }
+        
+        .product-detail-border {
             margin-top: 30px;
             padding: 20px;
 
+            border-radius: 20px;
+
             background-color: #fdf4e2;
+
         }
 
         .product-detail-top {
@@ -160,6 +176,8 @@
         .product-detail-img {
             width: 350px;
             height: 350px;
+
+            border-radius: 20px;
 
             background-position: center;
             background-size: cover;
@@ -247,21 +265,324 @@
         textarea {
             height: 200px;
         }
+
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .confirm-modal-content {
+            background-color: white;
+            margin: 300px auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .confirm-close-btn {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .confirm-close-btn:hover, .confirm-close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .confirm-button-group {
+            margin-top: 20px;
+        }
+
+        #confirm-yes-btn, #confirm-no-btn {
+            background-color: rgba(103, 123, 112, 50%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        #confirm-yes-btn:hover, #confirm-no-btn:hover {
+            background-color: #677B70;
+        }
+
+        #confirm-no-btn {
+            background-color: #f9ebd0;
+            color: black;
+        }
+
+        #confirm-no-btn:hover {
+            background-color: #f6daa3;
+            color: gray;
+        }
+
+
     </style>
+    <script>
+        $(document).ready(function () {
+            show_products();
+        });
+
+        let category_list = {1:"패션", 2:"전자제품", 3:"음식", 4:"화장품", 5:"기타"}
+
+        // R : 전체 데이터 조회 (query string으로 category 지정 시, 필터한 데이터를 조회)
+        function show_products(category=null) {
+            var url = '';
+            if (category) {
+                url = `/products?category=${category}`;
+            } else {
+                url = '/products'
+            }
+            fetch(url)
+                .then((res) => res.json())
+                .then((data) => {
+                    $(".product-wrap").empty();
+                    let products = data["products"];
+                    products.forEach((data) => {
+                        let id = parseInt(data["id"]);
+                        let name = data["name"];
+                        let image_url = data["image_url"];
+                        $(".product-wrap").append(`<div">
+                                                        <h5 class="product-text" id="${id}" style="background-image:url('${image_url}')" onclick="show_product(this)">
+                                                            ${name}
+                                                        </h5>
+                                                    </div>`);
+                    });
+                });
+        }
+
+        // C : 데이터 단건 저장
+        function save_product() {
+            let user = $("#RegisterModal .user").val();
+            let name = $("#RegisterModal .name").val();
+            let category= $("#RegisterModal .category option:selected").val();
+            let price = $("#RegisterModal .price").val();
+            let url = $("#RegisterModal .url").val();
+            let description = $("#RegisterModal .description").val();
+            let formData = new FormData();
+            formData.append("user_give", user);
+            formData.append("name_give", name);
+            formData.append("category_give", category);
+            formData.append("price_give", price);
+            formData.append("url_give", url);
+            formData.append("description_give", description);
+
+            fetch("/products", { method: "POST", body: formData })
+                .then((res) => res.json())
+                .then((data) => {
+                    window.location.reload();
+                });
+        }
+
+        // R : 단건 데이터 조회
+        function show_product(elem) {
+            const id = elem.id;
+            fetch(`products/${id}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    console.log(typeof data);
+                    $(".product-detail").empty();
+                    let product = data["product"];
+                    let user = product["user"];
+                    let name = product["name"];
+                    let price = `${product["price"].toLocaleString()}원`;
+                    let category_id = product["category"]
+                    let category_val = category_list[category_id];
+                    let url = product["url"];
+                    let image_url = product["image_url"];
+                    let description = product["description"];
+                    $(".product-detail").append(`<div class="product-detail-border ${id}">
+                                                    <div class="product-detail-top">
+                                                        <div class="product-detail-img" style="background-image:url('${image_url}')"></div>
+                                                        <table class="product-detail-table">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th class="product-detail-target">
+                                                                        User
+                                                                    </td>
+                                                                    <td class="product-detail-content">
+                                                                        ${user}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="product-detail-target">
+                                                                        Product
+                                                                    </td>
+                                                                    <td class="product-detail-content">
+                                                                        ${name}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="product-detail-target">
+                                                                        Category
+                                                                    </td>
+                                                                    <td class="product-detail-content">
+                                                                        ${category_val}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="product-detail-target">
+                                                                        Price
+                                                                    </td>
+                                                                    <td class="product-detail-content">
+                                                                        ${price}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="product-detail-target">
+                                                                        URL
+                                                                    </td>
+                                                                    <td class="product-detail-content">
+                                                                        <a href="${url}" target="_blank">바로가기 클릭</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="product-detail-middle">
+                                                        <div class="product-detail-description-title">Description</div>
+                                                        <div class="product-detail-description-content">
+                                                            ${description}
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-detail-bottom">
+                                                        <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
+                                                            Modify
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>`);
+                });
+        }
+
+        // 기존에 저장된 데이터를 불러와 input box에 삽입
+        function control_modify_modal() {
+            const productDetail = document.querySelector(".product-detail-border");
+            const id = productDetail.classList.item(1);
+
+            $('#ModifyModal').on('shown.bs.modal', function () {
+                fetch(`products/${id}`)
+                    .then((res) => res.json())
+                    .then((data) => {
+                        let product = data["product"];                    
+                        $('#ModifyModal .input-modal.user').val(product["user"]);
+                        $('#ModifyModal .input-modal.name').val(product["name"]);
+                        $('#ModifyModal .input-modal.price').val(product["price"]);
+                        $('#ModifyModal .input-modal.category option[value="' + product["category"] + '"]').attr('selected', true);
+                        $('#ModifyModal .input-modal.url').val(product["url"]);
+                        $('#ModifyModal .input-modal.description').val(product["description"]);
+                    })
+            });
+        }
+
+        // U : 데이터 수정
+        function modify_product() {
+            const productDetail = document.querySelector(".product-detail-border");
+            const id = productDetail.classList.item(1);
+
+            let user = $("#ModifyModal .user").val();
+            let name = $("#ModifyModal .name").val();
+            let category= $("#ModifyModal .category option:selected").val();
+            let price = $("#ModifyModal .price").val();
+            let url = $("#ModifyModal .url").val();
+            let description = $("#ModifyModal .description").val();
+            let formData = new FormData();
+            formData.append("user_give", user);
+            formData.append("name_give", name);
+            formData.append("category_give", category);
+            formData.append("price_give", price);
+            formData.append("url_give", url);
+            formData.append("description_give", description);
+
+            fetch(`products/${id}`, { method: "PUT", body: formData })
+                .then((res) => res.json())
+                .then((data) => {
+                    window.location.reload();
+                });
+        }
+
+        // D : 데이터 삭제
+        function delete_product() {
+            let pClass = document.querySelector('.product-detail-border');
+            let id = pClass.className.split(" ")[1];
+            fetch(`products/${id}`, { method: "DELETE" })
+                .then((res) => res.json())
+                .then((data) => {
+                    window.location.reload();
+                    });
+            }
+
+        
+        // 확인 모달 컨트롤
+        function control_confirm_modal() {
+            // 모달 버튼 클릭 시 모달 열기
+            // const modalDeleteBtn = document.getElementsByClassName("modal-delete-btn")[0];
+            const modal = document.getElementById("confirm-modal");
+            // modalDeleteBtn.addEventListener("click", () => {
+            modal.style.display = "block";
+            // });
+
+            // 작업 종류 체크
+            let btn_job = event.target.getAttribute("id");
+
+            // 모달 닫기 버튼 클릭 시 모달 닫기
+            const closeBtn = document.getElementsByClassName("confirm-close-btn")[0];
+            closeBtn.addEventListener("click", () => {
+                modal.style.display = "none";
+            });
+
+            // 아니오 버튼 클릭 시 모달 닫기
+            const cancelBtn = document.getElementById("confirm-no-btn");
+            cancelBtn.addEventListener("click", () => {
+                modal.style.display = "none";
+            });
+
+            // 예 버튼 클릭 시 해당 작업 요청
+            const confirmBtn = document.getElementById("confirm-yes-btn");
+            confirmBtn.addEventListener("click", () => {
+                console.log(btn_job)
+                if (btn_job = "modal-delete-btn") {
+                    delete_product();
+                }
+                modal.style.display = "none";
+            });
+        }
+
+    </script>
 
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-wrap">
             <div class="left-section">FLEX</div>
             <div class="middle-section"></div>
             <div class="right-section">
-                <div class="btn btn-category" onclick="">전체</div>
-                <div class="btn btn-category" onclick="">패션</div>
-                <div class="btn btn-category" onclick="">전자제품</div>
-                <div class="btn btn-category" onclick="">음식</div>
-                <div class="btn btn-category" onclick="">화장품</div>
-                <div class="btn btn-category" onclick="">기타</div>
+                <div class="btn btn-category" onclick="show_products()">전체</div>
+                <div class="btn btn-category" onclick="show_products(1)">패션</div>
+                <div class="btn btn-category" onclick="show_products(2)">전자제품</div>
+                <div class="btn btn-category" onclick="show_products(3)">음식</div>
+                <div class="btn btn-category" onclick="show_products(4)">화장품</div>
+                <div class="btn btn-category" onclick="show_products(5)">기타</div>
             </div>
         </div>
     </header>
@@ -284,114 +605,14 @@
             </div>
         </div>
 
+        <!-- product_list -->
         <div class="product-box">
             <div class="product-wrap">
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
-                        맥북에어
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
-                        갤럭시 z플립
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
-                        맥북에어
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
-                        갤럭시 z플립
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
-                        맥북에어
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
-                        갤럭시 z플립
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')">
-                        맥북에어
-                    </h5>
-                </a>
-                <a href="https://www.naver.com" target="_blank">
-                    <h5 class="product-text" style="background-image:url('https://image.ytn.co.kr/general/jpg/2022/0810/202208102235227729_t.jpg')">
-                        갤럭시 z플립
-                    </h5>
-                </a>
             </div>
         </div>
 
+        <!-- product_info -->
         <div class="product-detail">
-            <div class="product-detail-top">
-                <div class="product-detail-img" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvSIZVQf8BDvG25BYf2QfPdDsRi6ZpyQj6Ow&usqp=CAU')"></div>
-                <table class="product-detail-table">
-                    <tbody>
-                        <tr>
-                            <th class="product-detail-target">
-                                User
-                            </td>
-                            <td class="product-detail-content">
-                                피카츄
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="product-detail-target">
-                                Product
-                            </td>
-                            <td class="product-detail-content">
-                                맥북에어
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="product-detail-target">
-                                Category
-                            </td>
-                            <td class="product-detail-content">
-                                전자제품
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="product-detail-target">
-                                Price
-                            </td>
-                            <td class="product-detail-content">
-                                1,690,000원
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="product-detail-target">
-                                URL
-                            </td>
-                            <td class="product-detail-content">
-                                <a href="https://www.naver.com">https://www.naver.com</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="product-detail-middle">
-                <div class="product-detail-description-title">Description</div>
-                <div class="product-detail-description-content">
-                    개발자 필수템 맥북 가즈아!!!!!!!!!!!!!!!!!!<br>
-                    키스킨과 보호필름 구매도 잊지 말고 꼭 하자!!
-                </div>
-            </div>
-            <div class="product-detail-bottom">
-                <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal">
-                    Modify
-                </button>
-                <button type="button" class="btn btn-primary btn-delete" onclick="">
-                    Delete
-                </button>
-            </div>
         </div>
 
         <!-- Register Modal -->
@@ -407,51 +628,51 @@
                             <div class="input-box">
                                 <div class="input-target">User</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal user">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Product</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal name">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Category</div>
                                 <div class="input-content">
-                                    <select name="category" id="category-select">
-                                        <option value="1">전체</option>
-                                        <option value="2">패션</option>
-                                        <option value="3">전자제품</option>
-                                        <option value="4">음식</option>
-                                        <option value="5">화장품</option>
-                                        <option value="6">기타</option>
+                                    <select name="category" id="category-select" class="input-modal category">
+                                        <option value="0" selected>선택</option>
+                                        <option value="1">패션</option>
+                                        <option value="2">전자제품</option>
+                                        <option value="3">음식</option>
+                                        <option value="4">화장품</option>
+                                        <option value="5">기타</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Price</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal price">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">URL</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal url">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Description</div>
                                 <div class="input-content">
-                                    <textarea name="" id=""></textarea>
+                                    <textarea name="" id="" class="input-modal description"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" onclick="save_product()">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -470,53 +691,65 @@
                             <div class="input-box">
                                 <div class="input-target">User</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal user">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Product</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal name">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Category</div>
                                 <div class="input-content">
-                                    <select name="category" id="category-select">
-                                        <option value="1">전체</option>
-                                        <option value="2">패션</option>
-                                        <option value="3">전자제품</option>
-                                        <option value="4">음식</option>
-                                        <option value="5">화장품</option>
-                                        <option value="6">기타</option>
+                                    <select name="category" id="category-select" class="input-modal category">
+                                        <option value="0" selected>선택</option>
+                                        <option value="1">패션</option>
+                                        <option value="2">전자제품</option>
+                                        <option value="3">음식</option>
+                                        <option value="4">화장품</option>
+                                        <option value="5">기타</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Price</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal price">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">URL</div>
                                 <div class="input-content">
-                                    <input type="text" class="input-modal">
+                                    <input type="text" class="input-modal url">
                                 </div>
                             </div>
                             <div class="input-box">
                                 <div class="input-target">Description</div>
                                 <div class="input-content">
-                                    <textarea name="" id=""></textarea>
+                                    <textarea name="" id="" class="input-modal description"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" onclick="modify_product()">Save changes</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Confirm Delete Modal -->
+        <div id="confirm-modal" class="confirm-modal">
+            <div class="confirm-modal-content">
+            <span class="confirm-close-btn">&times;</span>
+            <p id="confirm-message">정말 삭제하시겠습니까?</p>
+            <div class="confirm-button-group">
+                <button id="confirm-yes-btn">예</button>
+                <button id="confirm-no-btn">아니오</button>
+            </div>
             </div>
         </div>
     </main>

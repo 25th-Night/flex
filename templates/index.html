@@ -81,15 +81,34 @@
             display: grid;
             grid-template-columns: 80% 20%;
             padding: 30px;
+            align-items: center;
+            padding-left: 16%;
         }
 
-        .page {
-            margin: auto;
-            padding-left: 150px;
-        }
-
-        .pagination {
+        .pagination-list {
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
             margin: 0;
+        }
+
+        ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+            grid-gap: 10px;
+            list-style: none;
+            justify-content: center
+        }
+
+        li > a {
+            color: #677B70;
+            margin: 0 5px;
+        }
+
+        li > a:hover {
+            color: #f9ebd0;
+            transform: scale(1.1);
+            text-shadow: -1px 0px gray, 0px 1px gray, 1px 0px gray, 0px -1px gray;
         }
 
         .page-link, .page-link:hover, .page-link:focus {
@@ -341,32 +360,6 @@
 
         let category_list = {1:"패션", 2:"전자제품", 3:"음식", 4:"화장품", 5:"기타"}
 
-        // R : 전체 데이터 조회 (query string으로 category 지정 시, 필터한 데이터를 조회)
-        function show_products(category=null) {
-            var url = '';
-            if (category) {
-                url = `/products?category=${category}`;
-            } else {
-                url = '/products'
-            }
-            fetch(url)
-                .then((res) => res.json())
-                .then((data) => {
-                    $(".product-wrap").empty();
-                    let products = data["products"];
-                    products.forEach((data) => {
-                        let id = parseInt(data["id"]);
-                        let name = data["name"];
-                        let image_url = data["image_url"];
-                        $(".product-wrap").append(`<div">
-                                                        <h5 class="product-text" id="${id}" style="background-image:url('${image_url}')" onclick="show_product(this)">
-                                                            ${name}
-                                                        </h5>
-                                                    </div>`);
-                    });
-                });
-        }
-
         // C : 데이터 단건 저장
         function save_product() {
             let user = $("#RegisterModal .user").val();
@@ -396,81 +389,87 @@
             fetch(`products/${id}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
-                    console.log(typeof data);
-                    $(".product-detail").empty();
-                    let product = data["product"];
-                    let user = product["user"];
-                    let name = product["name"];
-                    let price = `${product["price"].toLocaleString()}원`;
-                    let category_id = product["category"]
-                    let category_val = category_list[category_id];
-                    let url = product["url"];
-                    let image_url = product["image_url"];
-                    let description = product["description"];
-                    $(".product-detail").append(`<div class="product-detail-border ${id}">
-                                                    <div class="product-detail-top">
-                                                        <div class="product-detail-img" style="background-image:url('${image_url}')"></div>
-                                                        <table class="product-detail-table">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th class="product-detail-target">
-                                                                        User
-                                                                    </td>
-                                                                    <td class="product-detail-content">
-                                                                        ${user}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th class="product-detail-target">
-                                                                        Product
-                                                                    </td>
-                                                                    <td class="product-detail-content">
-                                                                        ${name}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th class="product-detail-target">
-                                                                        Category
-                                                                    </td>
-                                                                    <td class="product-detail-content">
-                                                                        ${category_val}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th class="product-detail-target">
-                                                                        Price
-                                                                    </td>
-                                                                    <td class="product-detail-content">
-                                                                        ${price}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th class="product-detail-target">
-                                                                        URL
-                                                                    </td>
-                                                                    <td class="product-detail-content">
-                                                                        <a href="${url}" target="_blank">바로가기 클릭</a>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="product-detail-middle">
-                                                        <div class="product-detail-description-title">Description</div>
-                                                        <div class="product-detail-description-content">
-                                                            ${description}
+                    let target = document.querySelector(`.product-${id}`);
+                    if (target) {
+                        target.remove();
+                    } else {
+                        console.log()
+                        console.log(data);
+                        console.log(typeof data);
+                        $(".product-detail").empty();
+                        let product = data["product"];
+                        let user = product["user"];
+                        let name = product["name"];
+                        let price = `${product["price"].toLocaleString()}원`;
+                        let category_id = product["category"]
+                        let category_val = category_list[category_id];
+                        let url = product["url"];
+                        let image_url = product["image_url"];
+                        let description = product["description"];
+                        $(".product-detail").append(`<div class="product-detail-border product-${id}">
+                                                        <div class="product-detail-top">
+                                                            <div class="product-detail-img" style="background-image:url('${image_url}')"></div>
+                                                            <table class="product-detail-table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th class="product-detail-target">
+                                                                            User
+                                                                        </td>
+                                                                        <td class="product-detail-content">
+                                                                            ${user}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="product-detail-target">
+                                                                            Product
+                                                                        </td>
+                                                                        <td class="product-detail-content">
+                                                                            ${name}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="product-detail-target">
+                                                                            Category
+                                                                        </td>
+                                                                        <td class="product-detail-content">
+                                                                            ${category_val}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="product-detail-target">
+                                                                            Price
+                                                                        </td>
+                                                                        <td class="product-detail-content">
+                                                                            ${price}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="product-detail-target">
+                                                                            URL
+                                                                        </td>
+                                                                        <td class="product-detail-content">
+                                                                            <a href="${url}" target="_blank">바로가기 클릭</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
-                                                    </div>
-                                                    <div class="product-detail-bottom">
-                                                        <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
-                                                            Modify
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                </div>`);
+                                                        <div class="product-detail-middle">
+                                                            <div class="product-detail-description-title">Description</div>
+                                                            <div class="product-detail-description-content">
+                                                                ${description}
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-detail-bottom">
+                                                            <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
+                                                                Modify
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>`);
+                    }
                 });
         }
 
@@ -567,6 +566,72 @@
             });
         }
 
+        const itemsPerPage = 8; // 한 페이지에 보여줄 아이템 개수
+        let currentPage = 1; // 현재 페이지 번호
+        let currentItems = []; // 현재 페이지에 표시될 아이템
+
+        // 페이지네이션 리스트를 렌더링하는 함수
+        function renderPagination(arr) {
+            const pagination = document.getElementById("pagination");
+            const paginationList = pagination.querySelector(".pagination-list");
+            paginationList.innerHTML = "";
+
+            const pageCount = Math.ceil(arr.length / itemsPerPage);
+
+            // 페이지네이션 리스트 아이템을 생성하고 클릭 이벤트를 추가함
+            for (let i = 1; i <= pageCount; i++) {
+                const paginationItem = document.createElement("li");
+                paginationItem.innerHTML = `<a href="#" class="pagination-link">${i}</a>`;
+
+                paginationItem.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    currentPage = i;
+                    renderData(arr);
+                });
+
+                paginationList.appendChild(paginationItem);
+            }
+        }
+
+        // 데이터를 렌더링하는 함수
+        function renderData(arr) {
+            // const dataContainer = document.getElementById("data-container");
+            const productsList = document.querySelector('.product-wrap');
+            productsList.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            currentItems = arr.slice(startIndex, endIndex);
+
+            currentItems.forEach((item) => {
+                // 각 아이템을 렌더링하고 데이터를 출력
+                const itemElement = document.createElement("div");
+                itemElement.innerHTML = `<div">
+                                            <h5 class="product-text" id="${item.id}" style="background-image:url('${item.image_url}')" onclick="show_product(this)">
+                                                ${item.name}
+                                            </h5>
+                                        </div>`; // 예시로 item.name을 출력
+                productsList.appendChild(itemElement);
+            });
+        }
+
+        function show_products(category=null) {
+            var url = '';
+            if (category) {
+                url = `/products?category=${category}`;
+            } else {
+                url = '/products'
+            }
+            fetch(url)
+                .then((res) => res.json())
+                .then((data) => {
+                    products = data["products"]
+                    renderPagination(products);
+                    renderData(products);
+                });
+        }
+
+
     </script>
 
 </head>
@@ -588,13 +653,9 @@
     </header>
     <main>
         <div class="page-wrap">
-            <div class="page">
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <div id="pagination">
+                <ul class="pagination-list">
+        
                 </ul>
             </div>
             <div class="btn-register-wrap">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/flex_icon.png">
     <title>FLEX</title>
 
     <link
@@ -568,7 +568,7 @@
 
         const itemsPerPage = 8; // 한 페이지에 보여줄 아이템 개수
         let currentPage = 1; // 현재 페이지 번호
-        let currentItems = []; // 현재 페이지에 표시될 아이템
+        let currentProducts = []; // 현재 페이지에 표시될 아이템
 
         // 페이지네이션 리스트를 렌더링하는 함수
         function renderPagination(arr) {
@@ -601,9 +601,9 @@
 
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            currentItems = arr.slice(startIndex, endIndex);
+            currentProducts = arr.slice(startIndex, endIndex);
 
-            currentItems.forEach((item) => {
+            currentProducts.forEach((item) => {
                 // 각 아이템을 렌더링하고 데이터를 출력
                 const itemElement = document.createElement("div");
                 itemElement.innerHTML = `<div">
@@ -628,6 +628,7 @@
                     products = data["products"]
                     renderPagination(products);
                     renderData(products);
+                    $(".product-detail").empty();
                 });
         }
 

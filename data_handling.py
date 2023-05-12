@@ -1,7 +1,9 @@
 from random import *
+from time import time
+import csv
+import pandas as pd
 from database import db, increase_id
 from crawling import getMetaData
-from time import time
 
 
 
@@ -19,7 +21,7 @@ description_list = ["사고싶다", "갖고싶다", "희망1순위", "최애템"
 
 url = "https://shopping.naver.com/home"
 
-def create_data():
+def create_dummy_data():
 
     counts = int(input("추가할 데이터 수를 입력하세요. "))
 
@@ -67,6 +69,43 @@ def create_data():
     print(f"데이터 {counts}개를 생성하는데 총 소요된 시간은 {end-start}초")
 
 
+def create_csv_data():
+
+    BASE_DIR = './static/csv/'
+
+    file_name = 'products.csv'
+
+    csv_path = BASE_DIR + file_name
+
+    with open(csv_path, 'rt', encoding='cp949') as f:
+        dr = csv.DictReader(f)
+        products_list = pd.DataFrame(dr)
+
+    for product in products_list.itertuples():
+
+        id, user, name, category, price, url, description = increase_id(), product[1], product[2], product[3], product[4], product[5], product[6]
+
+        try:
+            [title, desc, image_url] = getMetaData(url)
+        except:
+            image_url = 'https://cdn.pixabay.com/photo/2016/12/09/04/02/presents-1893642__340.jpg'
+
+        product_info = {
+
+            'id' : id,
+            'user': user,
+            'name': name,
+            'category': category,
+            'price': price,
+            'url': url,
+            'image_url': image_url,
+            'description': description
+        }
+
+        db.product.insert_one(product_info)
+        print(f"{id}번 데이터 생성 완료")
+    print(f"총 {len(products_list)} 개의 데이터 생성 완료")
+
 def check_db(table_name):
     if table_name not in db.list_collection_names():
         db.counter.insert_one({'collection' : table_name, 'id' : 0})
@@ -79,8 +118,11 @@ def set_id_count(table_name):
     db.counter.update_one({'collection' : table_name}, {'$set':{'id': length}})
     print("수정 완료")
 
-# 데이터 생성
-create_data()
+# dummy 데이터 생성
+# create_dummy_data()
+
+# csv 데이터 생성
+create_csv_data()
 
 table_name = "product"
 

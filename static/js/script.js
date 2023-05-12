@@ -51,7 +51,7 @@ function renderData(arr) {
         // 각 아이템을 렌더링하고 데이터를 출력
         const itemElement = document.createElement("div");
         itemElement.innerHTML = `<div">
-                                    <h5 class="product-text" id="${item.id}" style="background-image:url('${item.image_url}')" onclick="show_product(this)">
+                                    <h5 class="product-text" id="${item.id}" style="background-image:url('${item.image_url}')" onclick="show_product(this, ${item.id})">
                                         ${item.name}
                                     </h5>
                                 </div>`; // 예시로 item.name을 출력
@@ -67,10 +67,11 @@ function show_products(category = null) {
     } else {
         url = "/products";
     }
+
     fetch(url)
         .then((res) => res.json())
         .then((data) => {
-            products = data["products"];
+            let products = data["products"];
             renderPagination(products);
             renderData(products);
             $(".product-detail").empty();
@@ -101,18 +102,20 @@ function save_product() {
 }
 
 // R : 단건 데이터 조회
-function show_product(elem) {
-    const id = elem.id;
+function show_product(elem, id) {
     fetch(`products/${id}`)
         .then((res) => res.json())
         .then((data) => {
-            let target = document.querySelector(`.product-${id}`);
-            if (target) {
-                target.remove();
+            const productDetail = document.querySelector(
+                ".product-detail-border"
+            );
+            if (
+                elem &&
+                productDetail &&
+                id == productDetail.classList.item(1)
+            ) {
+                productDetail.remove();
             } else {
-                console.log();
-                console.log(data);
-                console.log(typeof data);
                 $(".product-detail").empty();
                 let product = data["product"];
                 let user = product["user"];
@@ -124,7 +127,7 @@ function show_product(elem) {
                 let image_url = product["image_url"];
                 let description = product["description"];
                 $(".product-detail")
-                    .append(`<div class="product-detail-border product-${id}">
+                    .append(`<div class="product-detail-border ${id}">
                                                 <div class="product-detail-top">
                                                     <div class="product-detail-img" style="background-image:url('${image_url}')"></div>
                                                     <table class="product-detail-table">
@@ -179,7 +182,7 @@ function show_product(elem) {
                                                     </div>
                                                 </div>
                                                 <div class="product-detail-bottom">
-                                                    <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
+                                                    <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onmousedown='control_modify_modal()'>
                                                         Modify
                                                     </button>
                                                     <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">
@@ -239,7 +242,19 @@ function modify_product() {
     fetch(`products/${id}`, { method: "PUT", body: formData })
         .then((res) => res.json())
         .then((data) => {
-            window.location.reload();
+            let modal = document.querySelector("#ModifyModal");
+            let modalBackdrop = document.querySelector(".modal-backdrop");
+            modalBackdrop.parentNode.removeChild(modalBackdrop);
+            modal.removeAttribute("aria-modal");
+            modal.removeAttribute("aria-hidden");
+            document.body.classList.remove("modal-open");
+            document.body.style = "None";
+            modal.style.display = "none";
+            modal.classList.remove("show");
+            // $("#ModifyModal").on("hidden.bs.modal", function () {
+            //     this.setAttribute("aria-hidden", "true");
+            // });
+            show_product(null, id);
         });
 }
 
@@ -281,7 +296,6 @@ function control_confirm_modal() {
     // 예 버튼 클릭 시 해당 작업 요청
     const confirmBtn = document.getElementById("confirm-yes-btn");
     confirmBtn.addEventListener("click", () => {
-        console.log(btn_job);
         if ((btn_job = "modal-delete-btn")) {
             delete_product();
         }

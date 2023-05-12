@@ -63,6 +63,8 @@ def products_get():
     else:
         products = list(db.product.find({}, {'_id': False}))
 
+    products.reverse()
+
     return jsonify({'products': products})
 
 

@@ -2,9 +2,11 @@ from enum import Enum
 from flask import Flask, render_template, request, jsonify
 from database import db, check_db, increase_id
 from crawling import getMetaData
-from time import time
+
+
 
 app = Flask(__name__)
+
 
 class Category(Enum):
     fashion = 1
@@ -55,11 +57,10 @@ def product_post():
 @app.route("/products", methods=["GET"])
 def products_get():
 
-    start = time()
-    category = request.args.get('category', 0)
+    category = int(request.args.get('category', 0))
 
     if category:
-        products = list(db.product.find({'category': int(category)}, {'_id': False}))
+        products = list(db.product.find({'category': category}, {'_id': False}))
     else:
         products = list(db.product.find({}, {'_id': False}))
 
@@ -112,39 +113,6 @@ def product_remove(id):
     db.product.delete_one({'id': int(id)})
 
     return jsonify({'msg': '삭제 완료!'})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

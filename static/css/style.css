@@ -22,6 +22,14 @@
     color: white;
 }
 
+.service-title {
+    text-align: center;
+}
+
+.service-title:hover {
+    cursor: pointer;
+}
+
 .middle-section {
     flex-grow: 1;
     margin: 25px;

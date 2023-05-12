@@ -178,11 +178,14 @@ function show_product(elem, id) {
                                                 <div class="product-detail-middle">
                                                     <div class="product-detail-description-title">Description</div>
                                                     <div class="product-detail-description-content">
-                                                        ${description}
+                                                        ${description.replace(
+                                                            /\n/g,
+                                                            "<br>"
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div class="product-detail-bottom">
-                                                    <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onmousedown='control_modify_modal()'>
+                                                    <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
                                                         Modify
                                                     </button>
                                                     <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">

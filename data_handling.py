@@ -83,7 +83,7 @@ def create_csv_data():
 
     for product in products_list.itertuples():
 
-        id, user, name, category, price, url, description = increase_id(), product[1], product[2], product[3], product[4], product[5], product[6]
+        id, user, name, category, price, url, description = increase_id(), product[1], product[2], int(product[3]), int(product[4]), product[5], product[6]
 
         try:
             [title, desc, image_url] = getMetaData(url)

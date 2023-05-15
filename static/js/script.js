@@ -100,6 +100,7 @@ category_section.addEventListener("click", (event) => {
     if (event.target.classList.contains("btn-category")) {
         let category = getKeyByValue(category_list, event.target.textContent);
         show_products(category);
+        document.querySelector(".product-detail").style.display = "none";
     } else {
         event.stopPropagation();
     }
@@ -142,11 +143,10 @@ function show_product(id) {
     fetch(`products/${id}`)
         .then((res) => res.json())
         .then((data) => {
-            let productDetail = document.querySelector(".product-detail");
             let product = data["product"];
             document.querySelector(
                 ".product-detail-img"
-            ).style.backgroundImage = `"url('${product["image_url"]}')"`;
+            ).style.backgroundImage = `url('${product["image_url"]}')`;
             document.querySelector(".product-detail-content.user").innerText =
                 product["user"];
             document.querySelector(".product-detail-content.name").innerText =
@@ -163,18 +163,6 @@ function show_product(id) {
             document.querySelector(
                 ".product-detail-content.description"
             ).innerText = product["description"];
-
-            // if (productDetail.classList.length === 1) {
-            //     productDetail.style.display = "block";
-            //     productDetail.classList.add(id);
-            // } else if (id != productDetail.classList.item(1)) {
-            //     productDetail.classList.remove(productDetail.classList.item(1));
-            //     productDetail.classList.add(id);
-            //     productDetail.style.display === "block";
-            // } else {
-            //     productDetail.classList.remove(productDetail.classList.item(1));
-            //     productDetail.style.display = "none";
-            // }
         });
 }
 
@@ -188,10 +176,12 @@ productsList.addEventListener("click", (event) => {
         if (productDetail.classList.length === 1) {
             productDetail.classList.add(productId);
             productDetail.style.display = "block";
+            productDetail.scrollIntoView({ behavior: "smooth" });
         } else if (productId != productDetail.classList.item(1)) {
             productDetail.classList.remove(productDetail.classList.item(1));
             productDetail.classList.add(productId);
             productDetail.style.display = "block";
+            productDetail.scrollIntoView({ behavior: "smooth" });
         } else {
             productDetail.classList.remove(productDetail.classList.item(1));
             productDetail.style.display = "none";
@@ -203,9 +193,6 @@ productsList.addEventListener("click", (event) => {
 
 // 기존에 저장된 데이터를 불러와 input box에 삽입
 function control_modify_modal() {
-    const productDetail = document.querySelector(".product-detail");
-    const id = productDetail.classList.item(1);
-
     document
         .querySelector("#ModifyModal")
         .addEventListener("shown.bs.modal", function () {

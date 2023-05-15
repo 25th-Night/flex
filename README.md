@@ -6,14 +6,14 @@
 
 - `Flask`를 이용한 간단한 CRUD 기능 구현
 - `MongoDB` 사용법 및 ID Field 컨트롤 학습
-- `Javascript`를 이용한 동적 화면 처리 및 `fetch` 함수를 이용한 비동기 API 호출 연습
+- `Vanilla JS`를 이용한 동적 화면 처리 및 `fetch` 함수를 이용한 비동기 API 호출 연습
 - `AWS ElasticBeanstalk`을 이용한 클라우드 배포
 
 <br>
 
 ## ✅ Summary
 
-- 사용자가 구매하고 싶은 상품을 등록하고, 다른 사용자와 공유하는 기능을 제공하는 웹 서비스
+- 사용자가 구매하고 싶은 상품의 URL을 등록하고, 다른 사용자와 공유하는 기능을 제공하는 웹 서비스
 - 댓글, 좋아요, 검색 등의 기능을 추가적으로 구현 예정
 
 <br>
@@ -109,7 +109,7 @@
 
 | 03. 상품 상세정보 조회 | 04. 상품 정보 등록 | 
 | --- | --- |
-| ![03  상품 상세정보 조회](https://github.com/25th-Night/flex/assets/104040502/fb3778c4-24f6-45b9-9c82-f99c60e2b053) | ![04  상품 정보 등록](https://github.com/25th-Night/flex/assets/104040502/e19d8c77-725c-45cd-96d2-918ba7e73dce) |
+| ![03  상품 상세정보 조회](https://github.com/25th-Night/flex/assets/104040502/0bcc61f3-4ed1-4b7b-a1c2-63bdaa473150) | ![04  상품 정보 등록](https://github.com/25th-Night/flex/assets/104040502/e19d8c77-725c-45cd-96d2-918ba7e73dce) |
 
 | 05. 상품 정보 수정 | 06. 상품 정보 삭제 | 
 | --- | --- |

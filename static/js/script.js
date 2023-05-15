@@ -1,8 +1,9 @@
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
     show_products();
 });
 
 let category_list = {
+    0: "전체",
     1: "패션",
     2: "전자제품",
     3: "음식",
@@ -13,6 +14,16 @@ let category_list = {
 const itemsPerPage = 8; // 한 페이지에 보여줄 아이템 개수
 let currentPage = 1; // 현재 페이지 번호
 let currentProducts = []; // 현재 페이지에 표시될 아이템
+
+// 객체에서 value를 이용해 key 값을 찾아오는 함수
+function getKeyByValue(object, value) {
+    return Object.keys(object).find((key) => object[key] === value);
+}
+
+// 가격을 숫자로 변환하는 함수
+function getPrice(priceString) {
+    return parseInt(priceString.replace(/[^\d]/g, ""));
+}
 
 // 페이지네이션 리스트를 렌더링하는 함수
 function renderPagination(arr) {
@@ -51,7 +62,7 @@ function renderData(arr) {
         // 각 아이템을 렌더링하고 데이터를 출력
         const itemElement = document.createElement("div");
         itemElement.innerHTML = `<div">
-                                    <h5 class="product-text" id="${item.id}" style="background-image:url('${item.image_url}')" onclick="show_product(this, ${item.id})">
+                                    <h5 class="product-text" id="${item.id}" style="background-image:url('${item.image_url}')">
                                         ${item.name}
                                     </h5>
                                 </div>`; // 예시로 item.name을 출력
@@ -74,18 +85,37 @@ function show_products(category = null) {
             let products = data["products"];
             renderPagination(products);
             renderData(products);
-            $(".product-detail").empty();
         });
 }
 
+// 이벤트 등록 : 로고 이미지 클릭 시 홈페이지로 이동
+let serviceTitle = document.querySelector(".service-title");
+serviceTitle.addEventListener("click", () => {
+    window.location.href = "/";
+});
+
+// 이벤트 등록 : 페이지 상단 카테고리별 데이터 조회
+let category_section = document.querySelector(".right-section");
+category_section.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btn-category")) {
+        let category = getKeyByValue(category_list, event.target.textContent);
+        show_products(category);
+    } else {
+        event.stopPropagation();
+    }
+});
+
 // C : 데이터 단건 저장
 function save_product() {
-    let user = $("#RegisterModal .user").val();
-    let name = $("#RegisterModal .name").val();
-    let category = $("#RegisterModal .category option:selected").val();
-    let price = $("#RegisterModal .price").val();
-    let url = $("#RegisterModal .url").val();
-    let description = $("#RegisterModal .description").val();
+    let user = document.querySelector("#RegisterModal .user").value;
+    let name = document.querySelector("#RegisterModal .name").value;
+    let category = document.querySelector("#RegisterModal .category");
+    category = category.options[category.selectedIndex].value;
+    let price = document.querySelector("#RegisterModal .price").value;
+    let url = document.querySelector("#RegisterModal .url").value;
+    let description = document.querySelector(
+        "#RegisterModal .description"
+    ).value;
     let formData = new FormData();
     formData.append("user_give", user);
     formData.append("name_give", name);
@@ -101,139 +131,140 @@ function save_product() {
         });
 }
 
+// 이벤트 등록 : 상품 상세 정보 보기란에서 Modify 버튼 클릭 시, 모달창에 기존 데이터 삽입
+let productRegister = document.querySelector(".btn-register-confirm");
+productRegister.addEventListener("click", () => {
+    save_product();
+});
+
 // R : 단건 데이터 조회
-function show_product(elem, id) {
+function show_product(id) {
     fetch(`products/${id}`)
         .then((res) => res.json())
         .then((data) => {
-            const productDetail = document.querySelector(
-                ".product-detail-border"
-            );
-            if (
-                elem &&
-                productDetail &&
-                id == productDetail.classList.item(1)
-            ) {
-                productDetail.remove();
-            } else {
-                $(".product-detail").empty();
-                let product = data["product"];
-                let user = product["user"];
-                let name = product["name"];
-                let price = `${product["price"].toLocaleString()}원`;
-                let category_id = product["category"];
-                let category_val = category_list[category_id];
-                let url = product["url"];
-                let image_url = product["image_url"];
-                let description = product["description"];
-                $(".product-detail")
-                    .append(`<div class="product-detail-border ${id}">
-                                                <div class="product-detail-top">
-                                                    <div class="product-detail-img" style="background-image:url('${image_url}')"></div>
-                                                    <table class="product-detail-table">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th class="product-detail-target">
-                                                                    User
-                                                                </td>
-                                                                <td class="product-detail-content">
-                                                                    ${user}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="product-detail-target">
-                                                                    Product
-                                                                </td>
-                                                                <td class="product-detail-content">
-                                                                    ${name}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="product-detail-target">
-                                                                    Category
-                                                                </td>
-                                                                <td class="product-detail-content">
-                                                                    ${category_val}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="product-detail-target">
-                                                                    Price
-                                                                </td>
-                                                                <td class="product-detail-content">
-                                                                    ${price}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="product-detail-target">
-                                                                    URL
-                                                                </td>
-                                                                <td class="product-detail-content">
-                                                                    <a href="${url}" target="_blank">바로가기 클릭</a>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="product-detail-middle">
-                                                    <div class="product-detail-description-title">Description</div>
-                                                    <div class="product-detail-description-content">
-                                                        ${description.replace(
-                                                            /\n/g,
-                                                            "<br>"
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div class="product-detail-bottom">
-                                                    <button type="button" class="btn btn-primary btn-modify"  data-bs-toggle="modal" data-bs-target="#ModifyModal" onclick='control_modify_modal()'>
-                                                        Modify
-                                                    </button>
-                                                    <button type="button" class="btn btn-primary btn-delete" id="modal-delete-btn" onclick="control_confirm_modal()">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>`);
-            }
+            let productDetail = document.querySelector(".product-detail");
+            let product = data["product"];
+            document.querySelector(
+                ".product-detail-img"
+            ).style.backgroundImage = `"url('${product["image_url"]}')"`;
+            document.querySelector(".product-detail-content.user").innerText =
+                product["user"];
+            document.querySelector(".product-detail-content.name").innerText =
+                product["name"];
+            let category_id = product["category"];
+            document.querySelector(
+                ".product-detail-content.category"
+            ).innerText = category_list[category_id];
+            document.querySelector(
+                ".product-detail-content.price"
+            ).innerText = `${product["price"].toLocaleString()}원`;
+            document.querySelector(".product-detail-content.url a").href =
+                product["url"];
+            document.querySelector(
+                ".product-detail-content.description"
+            ).innerText = product["description"];
+
+            // if (productDetail.classList.length === 1) {
+            //     productDetail.style.display = "block";
+            //     productDetail.classList.add(id);
+            // } else if (id != productDetail.classList.item(1)) {
+            //     productDetail.classList.remove(productDetail.classList.item(1));
+            //     productDetail.classList.add(id);
+            //     productDetail.style.display === "block";
+            // } else {
+            //     productDetail.classList.remove(productDetail.classList.item(1));
+            //     productDetail.style.display = "none";
+            // }
         });
 }
 
+// 이벤트 등록 : 상품 상세 정보 보기
+let productsList = document.querySelector(".product-wrap");
+productsList.addEventListener("click", (event) => {
+    if (event.target.classList.contains("product-text")) {
+        let productId = event.target.id;
+        show_product(productId);
+        let productDetail = document.querySelector(".product-detail");
+        if (productDetail.classList.length === 1) {
+            productDetail.classList.add(productId);
+            productDetail.style.display = "block";
+        } else if (productId != productDetail.classList.item(1)) {
+            productDetail.classList.remove(productDetail.classList.item(1));
+            productDetail.classList.add(productId);
+            productDetail.style.display = "block";
+        } else {
+            productDetail.classList.remove(productDetail.classList.item(1));
+            productDetail.style.display = "none";
+        }
+    } else {
+        event.stopPropagation();
+    }
+});
+
 // 기존에 저장된 데이터를 불러와 input box에 삽입
 function control_modify_modal() {
-    const productDetail = document.querySelector(".product-detail-border");
+    const productDetail = document.querySelector(".product-detail");
     const id = productDetail.classList.item(1);
 
-    $("#ModifyModal").on("shown.bs.modal", function () {
-        fetch(`products/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                let product = data["product"];
-                $("#ModifyModal .input-modal.user").val(product["user"]);
-                $("#ModifyModal .input-modal.name").val(product["name"]);
-                $("#ModifyModal .input-modal.price").val(product["price"]);
-                $(
-                    '#ModifyModal .input-modal.category option[value="' +
-                        product["category"] +
-                        '"]'
-                ).attr("selected", true);
-                $("#ModifyModal .input-modal.url").val(product["url"]);
-                $("#ModifyModal .input-modal.description").val(
-                    product["description"]
-                );
-            });
-    });
+    document
+        .querySelector("#ModifyModal")
+        .addEventListener("shown.bs.modal", function () {
+            let user = document.querySelector(
+                ".product-detail-content.user"
+            ).innerText;
+            let name = document.querySelector(
+                ".product-detail-content.name"
+            ).innerText;
+            let category = getKeyByValue(
+                category_list,
+                document.querySelector(".product-detail-content.category")
+                    .innerText
+            );
+            let price = getPrice(
+                document.querySelector(".product-detail-content.price")
+                    .innerText
+            );
+            let url = document.querySelector(".product-detail-content.url");
+            url = url.querySelector("a").href;
+            let description = document.querySelector(
+                ".product-detail-content.description"
+            ).innerText;
+            document.querySelector("#ModifyModal .input-modal.user").value =
+                user;
+            document.querySelector("#ModifyModal .input-modal.name").value =
+                name;
+            document.querySelector(
+                "#ModifyModal .input-modal.category option[value='" +
+                    category +
+                    "']"
+            ).selected = true;
+            document.querySelector("#ModifyModal .input-modal.price").value =
+                price;
+            document.querySelector("#ModifyModal .input-modal.url").value = url;
+            document.querySelector(
+                "#ModifyModal .input-modal.description"
+            ).value = description;
+        });
 }
+
+// 이벤트 등록 : 상품 상세 정보 보기란에서 Modify 버튼 클릭 시, 모달창에 기존 데이터 삽입
+let productModify = document.querySelector(".btn-modify");
+productModify.addEventListener("click", () => {
+    control_modify_modal();
+});
 
 // U : 데이터 수정
 function modify_product() {
-    const productDetail = document.querySelector(".product-detail-border");
+    const productDetail = document.querySelector(".product-detail");
     const id = productDetail.classList.item(1);
 
-    let user = $("#ModifyModal .user").val();
-    let name = $("#ModifyModal .name").val();
-    let category = $("#ModifyModal .category option:selected").val();
-    let price = $("#ModifyModal .price").val();
-    let url = $("#ModifyModal .url").val();
-    let description = $("#ModifyModal .description").val();
+    let user = document.querySelector("#ModifyModal .user").value;
+    let name = document.querySelector("#ModifyModal .name").value;
+    let category = document.querySelector("#ModifyModal .category");
+    category = category.options[category.selectedIndex].value;
+    let price = document.querySelector("#ModifyModal .price").value;
+    let url = document.querySelector("#ModifyModal .url").value;
+    let description = document.querySelector("#ModifyModal .description").value;
     let formData = new FormData();
     formData.append("user_give", user);
     formData.append("name_give", name);
@@ -251,20 +282,23 @@ function modify_product() {
             modal.removeAttribute("aria-modal");
             modal.removeAttribute("aria-hidden");
             document.body.classList.remove("modal-open");
-            document.body.style = "None";
             modal.style.display = "none";
             modal.classList.remove("show");
-            // $("#ModifyModal").on("hidden.bs.modal", function () {
-            //     this.setAttribute("aria-hidden", "true");
-            // });
-            show_product(null, id);
+            show_product(id);
+            document.querySelector(".product-detail").style.display = "block";
         });
 }
 
+// 이벤트 등록 : 수정 모달창에서 Save changes 클릭 시 데이터 수정
+let modifyConfirm = document.querySelector(".btn-modify-confirm");
+modifyConfirm.addEventListener("click", () => {
+    modify_product();
+});
+
 // D : 데이터 삭제
 function delete_product() {
-    let pClass = document.querySelector(".product-detail-border");
-    let id = pClass.className.split(" ")[1];
+    const productDetail = document.querySelector(".product-detail");
+    const id = productDetail.classList.item(1);
     fetch(`products/${id}`, { method: "DELETE" })
         .then((res) => res.json())
         .then((data) => {
@@ -305,3 +339,9 @@ function control_confirm_modal() {
         modal.style.display = "none";
     });
 }
+
+// 이벤트 등록 : 상품 상세 정보 보기란에서 Delete 버튼 클릭 시, 확인 팝업창 열기
+let deleteConfirm = document.querySelector(".btn-delete");
+deleteConfirm.addEventListener("click", () => {
+    control_confirm_modal();
+});

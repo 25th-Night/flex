@@ -54,11 +54,11 @@
 
 | Main | Detail | 
 | --- | --- |
-| ![image](https://github.com/25th-Night/flex/assets/104040502/74bd8294-cac8-4993-bec7-0a483bffc5b1) | ![image](https://github.com/25th-Night/flex/assets/104040502/6a0d95ff-1740-40e2-8e37-9bc0ad6b7a1e) |
+| ![image](https://github.com/25th-Night/flex/assets/104040502/bc9d9b10-802f-40cd-99b8-daef3c7f5311) | ![image](https://github.com/25th-Night/flex/assets/104040502/8ece2c3d-b429-4b43-9fb1-37a8ea38406f) |
 
 | Register | Modify | 
 | --- | --- |
-| ![image](https://github.com/25th-Night/flex/assets/104040502/5a9b3105-85e9-4de0-af02-a9b6baad44f0) | ![image](https://github.com/25th-Night/flex/assets/104040502/7b796d48-b9d9-4fab-a90c-1445ed2dd272) |
+| ![image](https://github.com/25th-Night/flex/assets/104040502/8207025d-44f8-4e3b-830c-a338267603b2) | ![image](https://github.com/25th-Night/flex/assets/104040502/09bc1521-943b-4a97-8e90-c87e34eaa688) |
 
 <br>
 
@@ -105,12 +105,12 @@
 
 | 01. 사이트 접속 & 페이징 | 02. 카테고리별 조회 | 
 | --- | --- |
-| ![01  사이트 접속](https://github.com/25th-Night/flex/assets/104040502/6335b9e6-f238-48de-812d-a806f837f443) | ![02  카테고리별 조회](https://github.com/25th-Night/flex/assets/104040502/956c5483-79f6-42ae-841d-073a692dd547) |
+| ![01  사이트 접속](https://github.com/25th-Night/flex/assets/104040502/fd1c8829-f01e-480d-b2dd-c67671396ddb)  | !![02  카테고리별 조회](https://github.com/25th-Night/flex/assets/104040502/c8706889-8e73-4be6-9c07-1b7985583fdc)  |
 
 | 03. 상품 상세정보 조회 | 04. 상품 정보 등록 | 
 | --- | --- |
-| ![03  상품 상세정보 조회](https://github.com/25th-Night/flex/assets/104040502/0bcc61f3-4ed1-4b7b-a1c2-63bdaa473150) | ![04  상품 정보 등록](https://github.com/25th-Night/flex/assets/104040502/e19d8c77-725c-45cd-96d2-918ba7e73dce) |
+| ![03  상품 상세정보 조회](https://github.com/25th-Night/flex/assets/104040502/6fceb5a5-f345-470c-9fd3-34cd818ec564) | ![04  상품 정보 등록](https://github.com/25th-Night/flex/assets/104040502/e5b46fcc-7e2a-4c39-b52b-1a18bba267c9) |
 
 | 05. 상품 정보 수정 | 06. 상품 정보 삭제 | 
 | --- | --- |
-| ![05  상품 정보 수정](https://github.com/25th-Night/flex/assets/104040502/da35747a-ebf3-40e8-9170-4aaf64577340) | ![06  상품 정보 삭제](https://github.com/25th-Night/flex/assets/104040502/0a4c7a59-79fb-4ca7-92d1-6702431cffcc) |
+| ![05  상품 정보 수정](https://github.com/25th-Night/flex/assets/104040502/81232d5c-63b8-4511-b0b9-daa9bceb887a) | ![06  상품 정보 삭제](https://github.com/25th-Night/flex/assets/104040502/bb9b0a5b-68a1-432a-877e-8bc4454fc15b) |
